@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HBD maa aydol🎉</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* BACKGROUND LAYER (FADE) */
+#bgLayer {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+  opacity: 1;
+  transition: opacity 0.6s ease;
+}
+
+/* vignette */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.4));
+  pointer-events: none;
+}
+
+/* JUDUL */
+h1 {
+  color: #fff;
+  font-size: 3rem;
+  text-shadow: 0 0 15px rgba(255,255,255,0.7);
+  animation: float 3s ease-in-out infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* FOTO */
+.main-img {
+  width: 180px;
+  border-radius: 20px;
+  margin-top: 20px;
+  box-shadow: 0 0 25px rgba(255,255,255,0.5);
+}
+
+/* FALLING */
+.text, .love {
+  position: fixed;
+  top: -50px;
+  font-weight: 900;
+  user-select: none;
+  animation: fall linear forwards;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.text {
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255,255,255,0.7);
+}
+
+.love {
+  color: #ff3366;
+  text-shadow: 0 0 15px #fff, 0 0 25px #ff6b81;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-10vh);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh);
+    opacity: 0;
+  }
+}
+
+/* CONTROL */
+.controls {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(15px);
+  padding: 12px 16px;
+  border-radius: 25px;
+}
+
+.music-control {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff4d6d, #ff8fab);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.music-control.active {
+  background: linear-gradient(135deg, #9c27b0, #e91e63);
+}
+
+.volume input {
+  width: 80px;
+}
+
+.bg-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.bg-btn {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  border: 2px solid white;
+}
+</style>
+</head>
+
+<body>
+
+<div id="bgLayer"></div>
+
+<h1>🎉 HBD maa aydoll 🎉</h1>
+
+<img src="tira0.png" class="main-img">
+
+<audio id="bgMusic" loop>
+  <source src="lagu.mp3" type="audio/mpeg">
+</audio>
+
+<div class="controls">
+  <div class="music-control" id="musicToggle">▶</div>
+
+  <div class="volume">
+    🔊 <input type="range" min="0" max="1" step="0.1" value="0.7" id="volumeSlider">
+  </div>
+
+  <div class="bg-buttons" id="bgButtons"></div>
+</div>
+
+<script>
+/* FALLING */
+const messages = ["HBD","rating buatankuu murni ini","Tira ak rating 11/10","slide volume ituu","klik tombol play lagu","klik tombol dibawah itu","hmmm","best idol gwejh","say owaw to reja","dibaca plss","maav kalo pusing bacanya","Lololoooo","67","SIXSEVEN","GKWT","Aoa lagi ysaa","Janhan lupain fens ini pls","Tiracool","langsung tidur ya gnight","Congrats","Tirakemrenn","Tiracantip","Tirabaiqhati","Tiraresmiremaja13","Tiraluxue","Tiranakbaik","Tiraimup","Dikkk","238 days kita kenal","🎉","🎂","Wish You All The Best","Semangat!"];
+const hearts = ["❤️","💖","21nov","💕"];
+
+function createFallingElement(text, isLove=false) {
+  const el = document.createElement('div');
+  el.className = isLove ? 'love' : 'text';
+  el.textContent = text;
+
+  el.style.left = Math.random()*100 + "vw";
+  el.style.fontSize = (1.5 + Math.random()*2) + "rem";
+  el.style.animationDuration = (4 + Math.random()*3) + "s";
+
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),7000);
+}
+
+setInterval(()=>{
+  createFallingElement(messages[Math.floor(Math.random()*messages.length)]);
+  createFallingElement(hearts[Math.floor(Math.random()*hearts.length)], true);
+},300);
+
+/* MUSIC */
+const music = document.getElementById("bgMusic");
+const toggle = document.getElementById("musicToggle");
+const volumeSlider = document.getElementById("volumeSlider");
+
+let isPlaying = false;
+
+toggle.onclick = ()=>{
+  if(!isPlaying){
+    music.play();
+    toggle.textContent = "⏸";
+    toggle.classList.add("active");
+  } else {
+    music.pause();
+    toggle.textContent = "▶";
+    toggle.classList.remove("active");
+  }
+  isPlaying = !isPlaying;
+};
+
+volumeSlider.oninput = ()=> music.volume = volumeSlider.value;
+
+/* BACKGROUND FADE */
+const bgLayer = document.getElementById("bgLayer");
+
+const bgList = [
+  "tira1.jpg",
+  "tira2.jpg",
+  "tira3.jpg",
+  "tira4.jpg",
+  "tira5.jpg",
+  "tira6.jpg",
+  "tira7.jpg"
+];
+
+const bgContainer = document.getElementById("bgButtons");
+
+bgList.forEach((img)=>{
+  const btn = document.createElement("div");
+  btn.className = "bg-btn";
+  btn.style.backgroundImage = `url(${img})`;
+
+  btn.onclick = ()=>{
+    bgLayer.style.opacity = 0;
+
+    setTimeout(()=>{
+      bgLayer.style.background = `
+        linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+        url(${img}) center/cover no-repeat
+      `;
+      bgLayer.style.opacity = 1;
+    }, 300);
+  };
+
+  bgContainer.appendChild(btn);
+});
+
+/* background awal */
+bgLayer.style.background = `
+  linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+  url(tira1.jpg) center/cover no-repeat
+`;
+</script>
+
+</body>
+</html>
